@@ -72,7 +72,7 @@ if(GENERATE_PYTORCH_EXTENSION)
 	#So we just launch python script;
 	add_custom_command(	OUTPUT Pytorch_Nv_Codec
 						WORKING_DIRECTORY ${PYTORCH_EXTENSION_SOURCES_DIR}
-						COMMAND ${Python3_EXECUTABLE} setup.py build --build-lib="${CMAKE_INSTALL_PREFIX}"/bin)
+						COMMAND ${Python3_EXECUTABLE} setup.py build --build-lib="${PYTORCH_EXTENSION_SOURCES_DIR}")
 
 	add_custom_target(	PytorchNvCodec
 						DEPENDS Pytorch_Nv_Codec)
