@@ -66,14 +66,21 @@ if(GENERATE_PYTHON_BINDINGS)
 endif(GENERATE_PYTHON_BINDINGS)
 
 if(GENERATE_PYTORCH_EXTENSION)
+	find_package(Python3 3.6 REQUIRED COMPONENTS Interpreter Development)
+
 	#Extension will be built using torch.utils.cpp_extension;
 	#So we just launch python script;
-	add_custom_command(	OUTPUT Pytorch_Nv_Codec
-						COMMAND cd ${PYTORCH_EXTENSION_SOURCES_DIR} && ${PYTHON_EXECUTABLE} setup.py build --build-lib="${CMAKE_INSTALL_PREFIX}"/bin)
+	set(PYTORCH_EXTENSION_TARGET_NAME "PytorchNvCodec.${Python3_SOABI}.so")
+
+	add_custom_command(	OUTPUT ${PYTORCH_EXTENSION_TARGET_NAME}
+						WORKING_DIRECTORY ${PYTORCH_EXTENSION_SOURCES_DIR}
+						COMMAND ${Python3_EXECUTABLE} setup.py build --build-lib="${PYTORCH_EXTENSION_SOURCES_DIR}")
 
 	add_custom_target(	PytorchNvCodec
-						DEPENDS Pytorch_Nv_Codec)
+						DEPENDS ${PYTORCH_EXTENSION_TARGET_NAME})
 	add_dependencies(PyNvCodec PytorchNvCodec)
+
+	install(FILES ${PYTORCH_EXTENSION_SOURCES_DIR}/${PYTORCH_EXTENSION_TARGET_NAME} DESTINATION bin)
 endif(GENERATE_PYTORCH_EXTENSION)
 
 if(ENABLE_TESTS)
